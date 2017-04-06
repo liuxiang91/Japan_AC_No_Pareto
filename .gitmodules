@@ -1,0 +1,12 @@
+[submodule "kfdatatools"]
+	path = kfdatatools
+	url = https://github.com/liuxiang91/kfdatatools
+[submodule "kfregression"]
+	path = kfregression
+	url = https://github.com/liuxiang91/kfregression
+[submodule "kftntcore"]
+	path = kftntcore
+	url = https://github.com/liuxiang91/kftntcore
+[submodule "kfpareto"]
+	path = kfpareto
+	url = https://github.com/liuxiang91/kfpareto
