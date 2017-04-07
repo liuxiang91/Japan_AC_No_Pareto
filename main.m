@@ -15,6 +15,7 @@ JPProg=labelProgression(JPInterp);
 ratio = (size(JPTrain,1)-1)/(size(ACRaw,1)-1);
 [ ACTrain,~ ] = splitTrainTest( ACProg, ratio );
 
+save('temp.mat')
 
 
 
