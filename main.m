@@ -13,6 +13,12 @@ JPProg=labelProgression(JPInterp);
 
 
 
+accuracy=[];
+nt=[];
+dd=[];
+
+for i=1:33
+  fprintf('*****i=%d\n',i);
 [ JPTrain,JPTest ] = splitTrainTest( JPProg, 0.7 );
 ratio = (size(JPTrain,1)-1)/(size(ACRaw,1)-1);
 [ ACTrain,~ ] = splitTrainTest( ACProg, ratio );
@@ -38,26 +44,38 @@ o=readRegCoeff();
 
 
 
-getRegModelJapanNoVar( A, C, Q, R, INITX, INITV, JPTrain);
+getRegModelJapan( A, C, Q, R, INITX, INITV, JPTrain);
 o=readRegCoeff();
 
 [accJPadd,ddJPadd,NTJPadd]= nonParetoAnalysis( A,C,Q,R,INITX,INITV,o, JPTrain,JPTest,0.01,'JP Training w Add. Var.','JP Testing');
 
+accuracy=[accuracy; [accAC, accJP,accJPadd]];
+nt=[nt;[NTAC,NTJP,NTJPadd]];
+dd=[dd;[ddAC,ddJP,ddJPadd]];
 
+end
 
-[h,p]=ttest(accAC,accJP);
+[h,p]=ttest(accuracy(:,1),accuracy(:,2));
 if h==1
-  fprintf('Mean is different, accuracy AC-JP=%f, pval=%f\n',mean(accAC-accJP),p)
+  fprintf('Mean is different, accuracy AC-JP=%f, pval=%f\n',mean(accuracy(:,1)-accuracy(:,2)),p)
   else
     fprintf('Mean is same\n')
       end
 
-      plot(NTJP,accJP,'*b')
-      hold on
-      plot(NTAC,accAC,'or')
-      plot(NTACadd,accACadd,'.g')
+      [h,p]=ttest(accJP,accJPadd);
+if h==1
+  fprintf('Mean is different, accuracy JP-JP+=%f, pval=%f\n',mean(accuracy(:,2)-accuracy(:,3)),p)
+  else
+    fprintf('Mean is same\n')
+      end
+f=figure();
+hold on
+c={'.b','.g','.r'};
+for i=1:3
+      plot(nt(:,i),accuracy(:,i),c{i})
+end
       xlabel('Number of Test per Year')
       ylabel('Accuracy')
       legend('AC','JP','JP+')
-      savefig('AC-JP GEE 1run.png')
-save('Japan_NonPareto_GEE.mat')
+      saveas(f,'AC-JP GLM 33run.png')
+save('Japan_NonPareto_GLM_33.mat')
